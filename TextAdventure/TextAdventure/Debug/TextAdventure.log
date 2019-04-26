@@ -1,0 +1,3 @@
+﻿  Source.cpp
+c:\users\jacheima\desktop\cppfinal\textadventure\textadventure\source.cpp(433): warning C4553: '==': result of expression not used; did you intend '='?
+  TextAdventure.vcxproj -> C:\Users\jacheima\Desktop\cppFInal\TextAdventure\Debug\TextAdventure.exe
