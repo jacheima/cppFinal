@@ -1,20 +1,20 @@
-#include "iostream"
-#include "string"
-#include "vector" // For the command handling function.
-#include "cctype" // Will be used to eliminate case sensitivity problems.
+#include <iostream>
+#include <string>
+#include <vector> //used to hold the commands of the player 
+#include <cctype> //will be used to eliminate case sensitivity problems
 
 using namespace std;
 
-enum en_dirs {FORWARD, LEFT, RIGHT, BACK, ABOVE, BELOW};
-enum en_rooms {SHELF, FLOOR, TOOLBOX, WATCH, SECRET_ROOM, SMALL_BOX, PHONE, RIGHT_WALL, LEFT_WALL, CEILING, EXIT, DOOR, RING};
+enum en_dirs {NORTH, EAST, SOUTH, WEST};
+enum en_rooms {MAIN, BATHROOM, CLOSET, EXIT};
 enum en_verbs {TAKE, DROP, USE, OPEN, CLOSE, EXAMINE, INVENTORY, LOOK};
-enum en_nouns {HANGER, OVER_COAT, BOX, POCKET_WATCH, PHOTO, TOOL_BOX, WIRE_CUTTERS, CROWBAR, GOLD_KEY, BLAZER, PDA, LETTER, SILVER_KEY, LOCKED_BOX, GEM, NOTE_ONE, NOTE_TWO, TRAP_DOOR, MAIN_DOOR, THE_RING};
+enum en_nouns {BATHROOM_DOOR, CLOSET_DOOR, DESK, BED, KEY, NOTE};
 
 const int NONE = -1;
-const int DIRS = 6;
-const int ROOMS = 13;
+const int DIRS = 4;
+const int ROOMS = 4;
 const int VERBS = 8;
-const int NOUNS = 20;
+const int NOUNS = 6;
 
 struct words
 {
@@ -47,7 +47,7 @@ void set_nouns(noun *nns);
 
 int main()
 {
-	int location = DOOR; //set the location of the player using the enumerated type identifier
+	int location = MAIN; //set the location of the player using the enumerated type identifier
 
 	string command;
 	string word_1;
@@ -152,101 +152,33 @@ void section_command(string cmd, string &wd1, string &wd2)
 
 void set_rooms(room *rms)
 {
-	rms[DOOR].description.assign("a door");
-	rms[DOOR].exits_to_room[FORWARD] = EXIT; //this will be locked
-	rms[DOOR].exits_to_room[BACK] = NONE;
-	rms[DOOR].exits_to_room[LEFT] = LEFT_WALL;
-	rms[DOOR].exits_to_room[RIGHT] = RIGHT_WALL;
-	rms[DOOR].exits_to_room[ABOVE] = CEILING;
-	rms[DOOR].exits_to_room[BELOW] = FLOOR;
+	rms[MAIN].description.assign("the main room");
+	rms[MAIN].exits_to_room[NORTH] = EXIT; //this will be locked
+	rms[MAIN].exits_to_room[EAST] = BATHROOM;
+	rms[MAIN].exits_to_room[SOUTH] = CLOSET;
+	rms[MAIN].exits_to_room[WEST] = NONE;
+	
 
-	rms[RIGHT_WALL].description.assign("a wall with a sticky note attached");
-	rms[RIGHT_WALL].exits_to_room[FORWARD] = NONE;
-	rms[RIGHT_WALL].exits_to_room[BACK] = NONE;
-	rms[RIGHT_WALL].exits_to_room[RIGHT] = SHELF;
-	rms[RIGHT_WALL].exits_to_room[LEFT] = DOOR;
-	rms[RIGHT_WALL].exits_to_room[ABOVE] = CEILING;
-	rms[RIGHT_WALL].exits_to_room[BELOW] = FLOOR;
+	rms[BATHROOM].description.assign("the bathroom");
+	rms[BATHROOM].exits_to_room[NORTH] = NONE;
+	rms[BATHROOM].exits_to_room[EAST] = NONE;
+	rms[BATHROOM].exits_to_room[SOUTH] = NONE;
+	rms[BATHROOM].exits_to_room[WEST] = MAIN;
+	
+	rms[CLOSET].description.assign("the closet");
+	rms[CLOSET].exits_to_room[NORTH] = MAIN;
+	rms[CLOSET].exits_to_room[EAST] = NONE;
+	rms[CLOSET].exits_to_room[SOUTH] = NONE;
+	rms[CLOSET].exits_to_room[WEST] = NONE;
+	
 
-	rms[LEFT_WALL].description.assign("a wall");
-	rms[LEFT_WALL].exits_to_room[FORWARD] = NONE;
-	rms[LEFT_WALL].exits_to_room[BACK] = NONE;
-	rms[LEFT_WALL].exits_to_room[LEFT] = SHELF;
-	rms[LEFT_WALL].exits_to_room[RIGHT] = DOOR;
-	rms[LEFT_WALL].exits_to_room[ABOVE] = CEILING;
-	rms[LEFT_WALL].exits_to_room[BELOW] = FLOOR;
-
-	rms[SHELF].description.assign("a shelf with a coat hanging off it, an old cardboard box and a pocket watch resting on the shelf.");
-	rms[SHELF].exits_to_room[FORWARD] = NONE;
-	rms[SHELF].exits_to_room[BACK] = NONE;
-	rms[SHELF].exits_to_room[LEFT] = RIGHT_WALL;
-	rms[SHELF].exits_to_room[RIGHT] = LEFT_WALL;
-	rms[SHELF].exits_to_room[ABOVE] = CEILING;
-	rms[SHELF].exits_to_room[BELOW] = FLOOR;
-
-	rms[CEILING].description.assign("a trap door that has been boarded over");
-	rms[CEILING].exits_to_room[FORWARD] = SECRET_ROOM;
-	rms[CEILING].exits_to_room[BACK] = DOOR;
-	rms[CEILING].exits_to_room[LEFT] = NONE;
-	rms[CEILING].exits_to_room[RIGHT] = NONE;
-	rms[CEILING].exits_to_room[ABOVE] = NONE;
-	rms[CEILING].exits_to_room[BELOW] = DOOR;
-
-	rms[FLOOR].description.assign("a tool box and a crumpled piece of paper lay on the floor");
-	rms[FLOOR].exits_to_room[FORWARD] = NONE;
-	rms[FLOOR].exits_to_room[BACK] = DOOR;
-	rms[FLOOR].exits_to_room[LEFT] = NONE;
-	rms[FLOOR].exits_to_room[RIGHT] = NONE;
-	rms[FLOOR].exits_to_room[ABOVE] = DOOR;
-	rms[FLOOR].exits_to_room[BELOW] = NONE;
-
-	rms[TOOLBOX].description.assign("Inside the toolbox you see snips and a small crowbar.");
-	rms[TOOLBOX].exits_to_room[ABOVE] = NONE;
-	rms[TOOLBOX].exits_to_room[LEFT] = NONE;
-	rms[TOOLBOX].exits_to_room[RIGHT] = NONE;
-	rms[TOOLBOX].exits_to_room[FORWARD] = NONE;
-	rms[TOOLBOX].exits_to_room[BELOW] = NONE;
-	rms[TOOLBOX].exits_to_room[BACK] = FLOOR;
-
-	rms[WATCH].description.assign("a pocket watch. The latch is jammed. Maybe I can find a small object to open with.");
-	rms[WATCH].exits_to_room[ABOVE] = NONE;
-	rms[WATCH].exits_to_room[LEFT] = NONE;
-	rms[WATCH].exits_to_room[RIGHT] = NONE;
-	rms[WATCH].exits_to_room[FORWARD] = NONE;
-	rms[WATCH].exits_to_room[BELOW] = NONE;
-	rms[WATCH].exits_to_room[BACK] = SHELF;
-
-	rms[SECRET_ROOM].description.assign("a secret room. You can see a box laying on its side on the floor, a blazer hanging over a rickety chair, and a worn piece of paper lay on the floor near the opening of the trap doo.");
-	rms[SECRET_ROOM].exits_to_room[ABOVE] = NONE;
-	rms[SECRET_ROOM].exits_to_room[LEFT] = NONE;
-	rms[SECRET_ROOM].exits_to_room[RIGHT] = NONE;
-	rms[SECRET_ROOM].exits_to_room[FORWARD] = NONE;
-	rms[SECRET_ROOM].exits_to_room[BELOW] = CEILING;
-	rms[SECRET_ROOM].exits_to_room[BACK] = CEILING;
-
-	rms[SMALL_BOX].description.assign("a small brown box. It's locked, I need a key to open it.");
-	rms[SMALL_BOX].exits_to_room[ABOVE] = NONE;
-	rms[SMALL_BOX].exits_to_room[LEFT] = NONE;
-	rms[SMALL_BOX].exits_to_room[RIGHT] = NONE;
-	rms[SMALL_BOX].exits_to_room[FORWARD] = NONE;
-	rms[SMALL_BOX].exits_to_room[BELOW] = NONE;
-	rms[SMALL_BOX].exits_to_room[BACK] = SECRET_ROOM;
-
-	rms[RING].description.assign("a small golden ring with a red gem. The gem seems loose.");
-	rms[RING].exits_to_room[ABOVE] = NONE;
-	rms[RING].exits_to_room[LEFT] = NONE;
-	rms[RING].exits_to_room[RIGHT] = NONE;
-	rms[RING].exits_to_room[FORWARD] = NONE;
-	rms[RING].exits_to_room[BELOW] = NONE;
-	rms[RING].exits_to_room[BACK] = SMALL_BOX;
-
-	rms[PHONE].description.assign("a brief case. It has a 4 digit combination lock, do I know the code?");
-	rms[PHONE].exits_to_room[BACK] = SECRET_ROOM;
-	rms[RING].exits_to_room[ABOVE] = NONE;
-	rms[RING].exits_to_room[LEFT] = NONE;
-	rms[RING].exits_to_room[RIGHT] = NONE;
-	rms[RING].exits_to_room[FORWARD] = NONE;
-	rms[RING].exits_to_room[BELOW] = NONE;
+	rms[EXIT].description.assign("You escaped.");
+	rms[EXIT].exits_to_room[NORTH] = NONE;
+	rms[EXIT].exits_to_room[EAST] = NONE;
+	rms[EXIT].exits_to_room[SOUTH] = MAIN;
+	rms[EXIT].exits_to_room[WEST] = NONE;
+	
+	
 
 
 	
@@ -255,41 +187,25 @@ void set_rooms(room *rms)
 
 void set_directions(words *dir)
 {
-	dir[ABOVE].code = ABOVE;
-	dir[ABOVE].word = "ABOVE";
+	dir[NORTH].code = NORTH;
+	dir[NORTH].word = "NORTH";
 
-	dir[LEFT].code = LEFT;
-	dir[LEFT].word = "LEFT";
+	dir[SOUTH].code = SOUTH;
+	dir[SOUTH].word = "SOUTH";
 
-	dir[RIGHT].code = RIGHT;
-	dir[RIGHT].word = "RIGHT";
+	dir[EAST].code = EAST;
+	dir[EAST].word = "EAST";
 
-	dir[BELOW].code = BELOW;
-	dir[BELOW].word = "BELOW";
+	dir[WEST].code = WEST;
+	dir[WEST].word = "WEST";
 
-	dir[FORWARD].code = FORWARD;
-	dir[FORWARD].word = "FORWARD";
-
-	dir[BACK].code = BACK;
-	dir[BACK].word = "BACK";
 
 }
 
 bool parser(int &loc, string wd1, string wd2, words *dir, words *vbs, room *rms, noun *nns)
 {
 
-	static bool open_state = false; //is the door open, false = closed and true = opened
-	bool is_watchLocked = true; //is the watch locked, true = locked and false = open
-	bool is_toolboxOpen = false; // is the tool box open, true = open and false = closed
-	bool is_watchOpen = false; //is the watch open, true = open and false = closed
-	bool gotKey_watch = false; // did the player get the key from watch, false = no and true = yes
-	bool is_boxLocked = true; //is the locked box locked, true = locked and false = unlocked
-	bool is_boxOpen = false; // is the locked box open, true = open and false = closed
-	bool is_trapDoorLocked = true; //is the trap door locked, true = locked and false = unlocked
-	bool is_trapDoorOpen = false; //is the trap door open, false = closed and true = open
-	bool is_mainDoorLocked = true;
-	bool is_mainDoorOpen = false;
-
+	static bool door_state = false;
 	int verb_action = NONE;
 	int noun_match = NONE;
 
@@ -322,7 +238,7 @@ bool parser(int &loc, string wd1, string wd2, words *dir, words *vbs, room *rms,
 		}
 	}
 
-	if(wd2.empty())
+	if(wd2 != " ")
 	{
 		for(i = 0; i < NOUNS; i++)
 		{
@@ -349,177 +265,23 @@ bool parser(int &loc, string wd1, string wd2, words *dir, words *vbs, room *rms,
 
 	if (verb_action == OPEN)
 	{
-		if (noun_match == TOOL_BOX)
+		if (noun_match == BATHROOM_DOOR)
 		{
-			if(loc == FLOOR)
+			if (loc == MAIN || loc == BATHROOM)
 			{
-				if(is_toolboxOpen == false)
+				if (door_state == false)
 				{
-					is_toolboxOpen = true;
-					cout << "I've opened the tool box. There are a pair of snips inside." << endl;
+					door_state = true;
+					cout << "I have opened the door." << endl;
 					return true;
 				}
-				else if(is_toolboxOpen == true)
-				{
-					cout << "The toolbox is already open." << endl;
-					return true;
-				}
-			}
-			else
-			{
-				cout << "There is no toolbox to open here." << endl;
-				return true;
-			}
-		}
-		else
-		{
-			cout << "Opening that is not possible." << endl;
-			return true;
-		}
-
-		if(noun_match == BOX)
-		{
-			if(loc == SHELF)
-			{
-				cout << "The box is empty." << endl;
-				return true;
-			}
-		}
-
-		if(noun_match == POCKET_WATCH)
-		{
-			if(loc == SHELF)
-			{
-				if(is_watchOpen == false && is_watchLocked == true)
-				{
-					cout << "I can't open this right now, it's jammed. I need something thin to open it." << endl;
-					return true;
-				}
-				else if(is_watchOpen == false && is_watchLocked == false)
-				{
-					is_watchOpen = true;
-					cout << "I've opened the watch. It reads 6:10. It looks like I can change the time." << endl;
-					return true;
-				}
-				else
-				{
-					cout << "The watch is already open." << endl;
-					return true;
-				}
-			}
-			else
-			{
-				cout << "There is no pocket watch here." << endl;
-				return true;
-			}
-		}
-		else
-		{
-			cout << "Opening that is not possible." << endl;
-			return true;
-		}
-
-		if(noun_match == LOCKED_BOX)
-		{
-			if(loc == SECRET_ROOM)
-			{
-				if(is_boxOpen == false && is_boxLocked == true)
-				{
-					cout << "I can't open that right now, it's locked. I need a key." << endl;
-					return true;
-				}
-				else if(is_boxOpen == false && is_boxLocked == false)
-				{
-					is_boxOpen == true;
-					cout << "I've opened the box. There is a ring inside." << endl;
-					return true;
-				}
-				else
-				{
-					cout << "The box is already open." << endl;
-					return true;
-				}
-			}
-			else
-			{
-				cout << "There is no box here." << endl;
-				return true;
-			}
-		}
-		else
-		{
-			cout << "Opening that is not possible." << endl;
-			return true;
-		}
-
-		if(noun_match == TRAP_DOOR)
-		{
-			if(loc == CEILING)
-			{
-				if(is_trapDoorOpen == false && is_trapDoorLocked == true)
-				{
-					cout << "I can't open that right now, it's locked. I need a key." << endl;
-					return true;
-				}
-				else if(is_trapDoorOpen == false && is_trapDoorLocked == false)
-				{
-					is_trapDoorOpen = true;
-					cout << "I've opened the door. It looks like it leads to another room." << endl;
-					return true;
-				}
-				else
+				else if (door_state == true)
 				{
 					cout << "The door is already open." << endl;
-					return true;
 				}
 			}
-			else
-			{
-				cout << "There is no door here." << endl;
-				return true;
-			}
 		}
-		else
-		{
-			cout << "Opening that is not possible." << endl;
-			return true;
-		}
-
-		if(noun_match == MAIN_DOOR)
-		{
-			if(loc == DOOR)
-			{
-				if(is_mainDoorOpen == false && is_mainDoorLocked == true)
-				{
-					cout << "I can't open that right now, it's locked. It looks like the key is some sort of gem." << endl;
-					return true;
-				}
-				if(is_mainDoorOpen == false && is_mainDoorLocked == false)
-				{
-					is_mainDoorOpen = true;
-					cout << "I've opened the door! I'm free! I should leave now." << endl;
-					return true;
-				}
-				else
-				{
-					cout << "The door is already open. I should leave." << endl;
-					return true;
-				}
-			}
-			else
-			{
-				cout << "There is no door here." << endl;
-				return true;
-			}
-		}
-		else
-		{
-			cout << "Opening that is not possible." << endl;
-			return true;
-		}
-
 	}
-
 	cout << "That was not a valid command." << endl;
 	return false;
 }
